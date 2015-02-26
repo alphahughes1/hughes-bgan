@@ -4,11 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/coffee -c index.coffee lib/*.coffee",
+    "debug": "coffee debug.coffee"
   },
   "author": "Ant Cosentino <ant@io.co.za>",
   "license": "ISC",
   "devDependencies": {
     "coffee-script": "^1.9.1"
+  },
+  "dependencies": {
+    "node-buffering": "^0.1.3"
   }
 }

@@ -1,21 +1,10 @@
-# init = ->
-#   cmee(2)
-#   _iclck('ad', 0, adminPassword)
-#   _ibnotify('_igps', 1)
-#   _ibnotify('_ipoint', 1)
-#   _ibnotify('_isleep', 1)
-#   _ibnotify('+cgpaddr', 1)
-#   _ibnotify('_ihreboot', 1)
-#   _ibnotify('_ihstatus', 1)
-#   _ibnotify('+cmti', 1)
-#   _ibnotify('_ibalarm', 1)
-#   _ibnotify('_ihbeam', 1)
 
-
-module.exports = class Terminal
+module.exports = class Commander
   
-  constructor: (@password) ->
-    @lineEnding = '\r\n'
+  constructor: (@password, @lineEnding = '\r\n') ->
+
+  echo: (status) =>
+    "at e #{status}#{@lineEnding}"
 
   _iclck: (facility, mode) =>
     "at_iclck=\"#{facility}\",#{mode},\"#{@password}\"#{@lineEnding}"
@@ -30,14 +19,14 @@ module.exports = class Terminal
   _igps: =>
     "at_igps?#{@lineEnding}"
 
-  _inis: (interface) =>
-    "at_inis=\"#{interface}\"#{@lineEnding}"
+  _inis: (subsystem) =>
+    "at_inis=\"#{subsystem}\"#{@lineEnding}"
 
   _ilog: (file, lines, offset) =>
     "at_ilog=\"#{file}\",#{lines},0,#{offset}#{@lineEnding}"
 
   _isig: =>
-    "at_isig?#{@lineEnding}"
+    "at_isig#{@lineEnding}"
 
   _isatinfo: =>
     "at_isatinfo#{@lineEnding}"
@@ -89,6 +78,14 @@ module.exports = class Terminal
 
   cmee: (level) =>
     "at+cmee=#{level}#{@lineEnding}"
+
+  _ihinit: (subsystem, status) =>
+    if (subsystem and status)
+      "at_ihinit=\"#{subsystem}\",#{status}#{@lineEnding}"
+    else if (subsystem and not status)
+      "at_ihinit=\"#{subsystem}\"#{@lineEnding}"
+    else
+      "at_ihinit?#{@lineEnding}"
 
   _ihstatus: (subsystem) =>
     if subsystem
