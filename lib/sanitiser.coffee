@@ -1,3 +1,4 @@
+
 isDeviceMetric = (chunk) ->
   return chunk.indexOf('_') > -1 or chunk.indexOf('+') > -1
 
@@ -11,7 +12,6 @@ stripCommas = (chunk) ->
   return chunk.replace(/, /g, ' ').replace(/,/g, ' ')
 
 insertBreaks = (chunk) ->
-  # return chunk.replace(/\d+(?=_)/, '$&\n').trim()
   return chunk.replace(/\d+((?=_)|(?= \+)|(?=\+))/g, '$&\n')
 
 module.exports = (chunk, callback) ->

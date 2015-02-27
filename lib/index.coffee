@@ -63,23 +63,16 @@ module.exports = (callback) ->
 
           # delete files in our temporary workspace
           return fs.unlink("tmp/#{fingerprint}", (cant_unlink) ->
-            if cant_unlink
-              return callback(cant_unlink, null)
             
-            # delete our temporary workspace
             return fs.rmdir('tmp', (cant_rmdir) ->
-              if cant_rmdir
-                return callback(cant_rmdir, null)
               
               # clean up our socket context
               socket.emit('end')
 
-              if cant_awk
-                return callback(cant_awk, null)
-
-              # call back to calling context 
-              # with awk results
-              return callback(null, res)
+              return callback(
+                cant_unlink ? cant_rmdir ? cant_awk,
+                res
+              )
             )
           )
         )
@@ -88,7 +81,7 @@ module.exports = (callback) ->
       
       # pass any received data through the
       # sanitiser and write it to file if 
-      # its useful output (useless output
+      # it's useful output (useless output
       # would be the 'OK' response or '\r\n')
       sanitise(data.toString(), (not_applicable, res) ->
         
