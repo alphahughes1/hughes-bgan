@@ -1,7 +1,8 @@
 
 net = require('net')
-
 socket = new net.Socket()
+
+socket.setTimeout(30000)
 
 socket.on('lookup', (err, address, family) ->
   console.error(err) if (err)
@@ -9,9 +10,8 @@ socket.on('lookup', (err, address, family) ->
   console.log('HOST ADDRESS', address)
   console.log('HOST FAMILY', family)
 ).on('timeout', ->
-  console.log('CONNECTION TIMEOUT')
-  socket.unref()
-  socket.end()
+  console.error('CONNECTION TIMEOUT')
+  socket.emit('finished')
 ).on('error', (err) ->
   console.error('CONNECTION ERROR', err)
   socket.unref()
