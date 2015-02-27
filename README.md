@@ -1,24 +1,18 @@
 
-# command reference
+### atcmd
 
-##### _iclck
+configure the application with environment variables (`BGAN_HOST`, `BGAN_PORT`, `BGAN_PASSWORD`) or command line arguments.
 
-Enable / Disable facility lock (this allows remote administrator access to the UT)
+##### usage
 
-Example:
-`at_iclck="ad",0,"password"`
+with environment variables:
 
-##### +cgmi
-##### +cgmm
-##### +cgmn
-##### +cgmp
-##### +cgmr
-##### +cgms
-##### +cgsn
-##### +cimi
-##### +creg
-##### +cnum
-##### +cops
-##### +clck
-##### +cpwd
-##### +cbc
+```
+$ BGAN_HOST=192.168.128.100 BGAN_PORT=1829 BGAN_PASSWORD=admin coffee index.coffee
+```
+
+with command line arguments
+
+```
+$ coffee index.coffee 192.168.128.100 1829 admin
+```
