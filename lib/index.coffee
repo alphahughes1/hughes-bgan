@@ -26,7 +26,8 @@ module.exports = (callback) ->
     terminal._ihread('imei')
   ]
   
-  totalCommands = commandQueue.length
+  # subtract 1 because the first command has no output
+  totalCommands = commandQueue.length - 1
   diagnostics = []
 
   # create a temporary workspace
@@ -116,7 +117,7 @@ module.exports = (callback) ->
         # emit 'finished' if there are no
         # more commands to send and we've
         # received all data from the socket
-        if diagnostics.length is totalCommands - 1
+        if diagnostics.length is totalCommands
           socket.emit('finished')
       )
     ).connect(BGAN_PORT, BGAN_HOST, ->
