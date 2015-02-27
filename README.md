@@ -16,3 +16,11 @@ with command line arguments
 ```
 $ coffee index.coffee 192.168.128.100 1829 admin
 ```
+
+example output:
+
+```
+ESTABLISHED CONNECTION { address: '192.168.128.101', family: 'IPv4', port: 62898 }
+CONNECTION CLOSED
+{"faults":0,"gps":{"lat":"-33.92500","lon":"18.44848","fix":"3D","status":"allowed","date":"15/02/27","time":"10:59:21"},"ethernet":1,"usb":1,"signal":68,"satellite_id":6,"temp":31,"beam_id":104,"imsi":"901112112552742","imei":"353938-03-007957-2"}
+```
