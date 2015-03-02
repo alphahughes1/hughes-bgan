@@ -14,7 +14,7 @@ commander = new commander(BGAN_PASSWORD)
 responses = []
 
 commandQueue = [
-  commander._iclck('ad', 0)
+  commander._iclck('ad', '0')
   commander._ihstatus('flts')
   commander._ihstatus('gps')
   commander._inis('eth')
@@ -25,6 +25,7 @@ commandQueue = [
   commander._ihbeam()
   commander.cimi()
   commander._ihread('imei')
+  commander._ihip('unitip')
 ]
 
 nExpectedResponses = commandQueue.length - 1

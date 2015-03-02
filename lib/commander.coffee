@@ -87,6 +87,12 @@ module.exports = class Commander
     else
       "at_ihinit?#{@lineEnding}"
 
+  _ihip: (subsystem) =>
+    if (subsystem)
+      "at_ihip=\"#{subsystem}\"#{@lineEnding}"
+    else
+      "at_ihip?#{@lineEnding}"
+
   _ihstatus: (subsystem) =>
     if subsystem
       "at_ihstatus=\"#{subsystem}\"#{@lineEnding}"
