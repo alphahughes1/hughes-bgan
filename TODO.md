@@ -1,0 +1,2 @@
+- change the awk childprocess to not use an input file, thereby removing the need for the filesystem bullshit.
+- optimise the sanitiser and the sanitisers callback context

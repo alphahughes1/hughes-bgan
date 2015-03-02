@@ -3,38 +3,42 @@
 
 buffering = require('node-buffering')
 commander = require('./commander')
-sanitise  = require('./sanitiser')
+sanitiser  = require('./sanitiser')
 socket    = require('./socket')
 awk       = require('./awk')
 fs        = require('fs')
 
+commander = new commander(BGAN_PASSWORD)
+
+# a buffer for command responses
+responses = []
+
+# prepare an array of AT commands to
+# write on the socket (functions of 
+# `commander` return strings)
+commandQueue = [
+  commander._iclck('ad', 0)
+  commander._ihstatus('flts')
+  commander._ihstatus('gps')
+  commander._inis('eth')
+  commander._inis('usb')
+  commander._isig()
+  commander._isatcur()
+  commander._ihtemp()
+  commander._ihbeam()
+  commander.cimi()
+  commander._ihread('imei')
+]
+
+nExpectedResponses = commandQueue.length - 1
+
 module.exports = (callback) ->
-
-  # initialise our command list
-  terminal = new commander(BGAN_PASSWORD)
-  commandQueue = [
-    terminal._iclck('ad', 0)
-    terminal._ihstatus('flts')
-    terminal._ihstatus('gps')
-    terminal._inis('eth')
-    terminal._inis('usb')
-    terminal._isig()
-    terminal._isatcur()
-    terminal._ihtemp()
-    terminal._ihbeam()
-    terminal.cimi()
-    terminal._ihread('imei')
-  ]
   
-  # subtract 1 because the first command has no output
-  totalCommands = commandQueue.length - 1
-  diagnostics = []
-
   # create a temporary workspace
-  return fs.mkdir('tmp', (cant_mkdir) ->
+  return fs.mkdir('tmp', (mkdirErr) ->
 
     # bail out if we can't
-    return callback(cant_mkdir, null) if cant_mkdir
+    return callback(mkdirErr, null) if mkdirErr
 
     # timestamp our diagnostic data
     fingerprint = "#{Date.now()}.dmp"
@@ -43,34 +47,35 @@ module.exports = (callback) ->
     dump = fs.createWriteStream("tmp/#{fingerprint}")
 
     # initialise our throttler and bind our
-    # socket.write()s to the buffer flush event
+    # socket writing to the throttler flush event
     commandBuffer = new buffering().on('flush', (data) ->
+      # console.log('invalid data?', data)
       socket.write data[0]
       commandBuffer.pause()
     )
 
     # this event is emitted from socket.on('data')
     # once all data has been received
-    return socket.on('finished', ->
+    socket.on('finished', ->
       
       # invoke awk in a child process once
       # all socket data has been received
-      return awk(fingerprint, (cant_awk, res) ->
+      awk(fingerprint, (awkErr, res) ->
 
         # close the writable stream once awk
         # has called back with the results
         dump.end( ->
 
           # delete files in our temporary workspace
-          return fs.unlink("tmp/#{fingerprint}", (cant_unlink) ->
+          fs.unlink("tmp/#{fingerprint}", (rmFileErr) ->
             
-            return fs.rmdir('tmp', (cant_rmdir) ->
+            fs.rmdir('tmp', (rmDirErr) ->
               
               # clean up our socket context
               socket.emit('end')
 
-              return callback(
-                cant_unlink ? cant_rmdir ? cant_awk,
+              callback(
+                rmFileErr ? rmDirErr ? awkErr,
                 res
               )
             )
@@ -79,38 +84,24 @@ module.exports = (callback) ->
       )
     ).on('data', (data) ->
       
+      # continue buffering commands 
+      # for socket writing if any
+      # remain...
+      if commandQueue.length
+        commandBuffer.resume()
+        commandBuffer.enqueue(commandQueue.splice(0, 1))
+        commandBuffer.flush()
+
       # pass any received data through the
       # sanitiser and write it to file if 
       # it's useful output (useless output
       # would be the 'OK' response or '\r\n')
-      sanitise(data.toString(), (not_applicable, res) ->
+      sanitiser(data.toString(), (notApplicable, res) ->
+        unless notApplicable
+          responses = responses.concat(res)
+          dump.write("#{res.join('\n')}\n")
         
-        unless not_applicable
-
-          # sometimes the socket outputs
-          # results for two commands at
-          # once. we have to use regex to
-          # determine this and split each
-          # result into its own line for
-          # awk to parse it correctly
-          if Array.isArray(res)
-            diagnostics = diagnostics.concat(res)
-            dump.write("#{res.join('\n')}\n")
-          else
-            diagnostics.push(res)
-            dump.write(res) 
-
-        # buffer up more commands to be
-        # written to the socket
-        if commandQueue.length
-          commandBuffer.resume()
-          commandBuffer.enqueue(commandQueue.splice(0, 1))
-          commandBuffer.flush()
-        
-        # emit 'finished' if there are no
-        # more commands to send and we've
-        # received all data from the socket
-        if diagnostics.length is totalCommands
+        if responses.length is nExpectedResponses
           socket.emit('finished')
       )
     ).connect(BGAN_PORT, BGAN_HOST, ->
