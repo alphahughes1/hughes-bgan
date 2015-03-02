@@ -3,10 +3,9 @@
 
 buffering = require('node-buffering')
 commander = require('./commander')
-sanitiser  = require('./sanitiser')
+sanitiser = require('./sanitiser')
 socket    = require('./socket')
 awk       = require('./awk')
-fs        = require('fs')
 
 commander = new commander(BGAN_PASSWORD)
 
@@ -30,30 +29,32 @@ commandQueue = [
 
 nExpectedResponses = commandQueue.length - 1
 
+commandBuffer = new buffering().on('flush', (data) ->
+  socket.write data[0]
+  commandBuffer.pause()
+)
+
+socket.on('data', (data) ->
+  
+  if commandQueue.length
+    commandBuffer.resume()
+    commandBuffer.enqueue(commandQueue.splice(0, 1))
+    commandBuffer.flush()
+
+  sanitiser(data.toString(), (notApplicable, res) ->
+    unless notApplicable
+      responses = responses.concat(res)
+    if responses.length is nExpectedResponses
+      socket.emit('finished')
+  )
+)
+
 module.exports = (callback) ->
   
-  commandBuffer = new buffering().on('flush', (data) ->
-    socket.write data[0]
-    commandBuffer.pause()
-  )
-
   socket.on('finished', ->
     awk("#{responses.join('\n')}\n", (err, res) ->
       socket.emit('end')
       callback(err, res)
-    )
-  ).on('data', (data) ->
-    
-    if commandQueue.length
-      commandBuffer.resume()
-      commandBuffer.enqueue(commandQueue.splice(0, 1))
-      commandBuffer.flush()
-
-    sanitiser(data.toString(), (notApplicable, res) ->
-      unless notApplicable
-        responses = responses.concat(res)
-      if responses.length is nExpectedResponses
-        socket.emit('finished')
     )
   ).connect(BGAN_PORT, BGAN_HOST, ->
     console.log('ESTABLISHED CONNECTION', socket.address())

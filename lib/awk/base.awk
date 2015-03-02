@@ -1,16 +1,8 @@
 BEGIN {
-  # Field Separator (" " by default)
   FS = " ";
-
-  # Record Separator (lines)
   RS = "\n";
-
-  # Output Field Separator
   OFS = "";
-
-  # Output Record Separator (lines)
   ORS = "";
-
   print "{";
 }
 

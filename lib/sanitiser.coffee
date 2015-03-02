@@ -32,15 +32,13 @@ stripCommas = (chunk) ->
   chunk.replace(/, /g, ' ').replace(/,/g, ' ')
 
 insertBreaks = (chunk) ->
-  chunk.replace(/\d+((?=_)|(?= \+)|(?=\+))/g, '$&\n')
+  chunk.replace(/\d+((?=_)|(?= \+)|(?=\+)|(?=OK)|(?=ERROR))/g, '$&\n')
 
 module.exports = (socketData, callback) ->
   
   # clean it up enough for us to
   # know whether it's garbage
   chunk = stripCRLF(stripERROR(stripOK(socketData)))
-
-  # console.log('ok, error, crlf', chunk)
 
   if isDeviceError(chunk)
     callback(true, null)
