@@ -1,14 +1,23 @@
 {spawn} = require('child_process')
 
-module.exports = (fingerprint, callback) ->
+module.exports = (bganOutput, callback) ->
   
-  output = ''
+  # buffer for process output
+  awkOutput = ''
 
-  awk = spawn('awk', ['-f', 'lib/awk/base.awk', "tmp/#{fingerprint}"])
+  # initialise awk without an input file
+  awk = spawn('awk', ['-f', 'lib/awk/base.awk'])
 
-  awk.stdout.on('data', (data) -> output += data)
+  # buffer up the awkOutput
+  awk.stdout.on('data', (data) -> awkOutput += data)
 
+  # callback with awks results
   awk.on('close', (code) ->
-    return callback(null, output) unless code > 0
-    return callback(code, null)
+    unless code > 0
+      callback(null, awkOutput)
+    else
+      callback(code, null)
   )
+
+  process.nextTick ->
+    awk.stdin.end(bganOutput)
