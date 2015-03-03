@@ -12,12 +12,12 @@ Easy communication to a Hughes BGAN using a node.js npm packages.
 the module is programmed to check `BGAN_HOST`, `BGAN_PORT`, `BGAN_PASSWORD` for configuration options.
 
 ```javascript
-    // retrieving bgan device metrics:
-    var bgan = require('hughes-bgan');
-    bgan.metrics(function(err, res) {
-        if (err) throw err;
-        console.log(res);
-    });
+// retrieving bgan device metrics:
+var bgan = require('hughes-bgan');
+bgan.metrics(function(err, res) {
+    if (err) throw err;
+    console.log(res);
+});
 ```
 
 example output:
