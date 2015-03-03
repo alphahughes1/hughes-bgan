@@ -19,8 +19,7 @@ runAwkScript = (scriptName, scriptInput, callback) ->
       callback(code, null)
   )
 
-  process.nextTick ->
-    awk.stdin.end(scriptInput)
+  process.nextTick( -> awk.stdin.end(scriptInput))
 
 module.exports = (awkScriptName, bganOutput, callback) ->
   
