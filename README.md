@@ -1,9 +1,11 @@
 
-### atcmd
+# hughes-bgan
 
-configure the application with environment variables (`BGAN_HOST`, `BGAN_PORT`, `BGAN_PASSWORD`) or command line arguments.
+Easy communication to a Hughes BGAN using a node.js npm packages.
 
 ##### usage
+
+configure the application with environment variables (`BGAN_HOST`, `BGAN_PORT`, `BGAN_PASSWORD`) or command line arguments.
 
 with environment variables:
 
