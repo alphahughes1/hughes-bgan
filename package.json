@@ -1,7 +1,7 @@
 {
   "name": "hughes-bgan",
   "version": "0.0.1",
-  "description": "",
+  "description": "A wrapper for hughes-bgan-base providing different sets of functionality.",
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha",
