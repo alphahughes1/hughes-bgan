@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/io-digital/hughes-bgan.svg)](https://travis-ci.org/io-digital/hughes-bgan)
 [![Coverage Status](https://coveralls.io/repos/io-digital/hughes-bgan/badge.svg)](https://coveralls.io/r/io-digital/hughes-bgan)
 
-Easy communication to a Hughes BGAN using a node.js npm packages.
+Easy communication to a [Hughes](http://www.hughes.com/) BGAN using a node.js npm packages.
 
 ##### usage
 
