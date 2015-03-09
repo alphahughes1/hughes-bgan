@@ -1,15 +1,20 @@
 {spawn} = require('child_process')
 
-runAwkScript = (scriptName, scriptInput, callback) ->
+module.exports = (scriptName, scriptInput, callback) ->
 
   # buffer for process output
   awkOutput = ''
 
   # initialise awk without an input file
-  awk = spawn('awk', ['-f', "lib/awk/#{scriptName}.awk"])
+  
+  awk = spawn('awk', ['-f', "#{__dirname}/../ext/#{scriptName}.awk"])
 
   # buffer up the awkOutput
   awk.stdout.on('data', (data) -> awkOutput += data)
+
+  awk.stderr.on('data', (data) -> console.log(data.toString()))
+
+  process.nextTick( -> awk.stdin.end(scriptInput))
 
   # callback with awks results
   awk.on('close', (code) ->
@@ -18,9 +23,3 @@ runAwkScript = (scriptName, scriptInput, callback) ->
     else
       callback(code, null)
   )
-
-  process.nextTick( -> awk.stdin.end(scriptInput))
-
-module.exports = (awkScriptName, bganOutput, callback) ->
-  
-  runAwkScript(awkScriptName, bganOutput, callback)

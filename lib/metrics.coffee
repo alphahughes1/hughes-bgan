@@ -8,10 +8,11 @@ _ = new bgan.commander(BGAN_PASSWORD)
 
 module.exports = (callback) ->
 
-  new bgan.base(
+  new bgan.base({
     host: BGAN_HOST
     port: BGAN_PORT
-    password: BGAN_PASSWORD
+    autoConnect: true
+    stripResponses: true
     commands: [
       _.iclck('ad', '0')
       _.ihstatus('flts')
@@ -26,10 +27,8 @@ module.exports = (callback) ->
       _.ihread('imei')
       _.ihip('unitip')
     ]
-    stripResponses: true
-    autoConnect: true
     onEnd: (responses) ->
       awk('metrics', "#{responses.join('\n')}\n", (err, res) ->
         callback(err, res)
       )
-  )
+  })
