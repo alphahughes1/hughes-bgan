@@ -6,11 +6,11 @@ awk = require('./awk')
 
 _ = new bgan.commander(BGAN_PASSWORD)
 
-module.exports = (callback) ->
+module.exports = (params, callback) ->
 
   new bgan.base({
-    host: BGAN_HOST
-    port: BGAN_PORT
+    host: params.host ? BGAN_HOST
+    port: params.port ? BGAN_PORT
     autoConnect: true
     stripResponses: true
     commands: [
