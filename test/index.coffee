@@ -1,7 +1,8 @@
 
-{expect} = require('chai') 
+{expect} = require('chai')
 
-awkTest = [
+fixtures = [
+  [
     'FLTS - 0',
     'IGPS - -33.92500 18.44848 3D allowed 15/02/27 10:59:21',
     'ETH - 1',
@@ -13,32 +14,127 @@ awkTest = [
     'CIMI 901112112552742',
     'IMEI - 353938-03-007957-2',
     'UNITIP - 127.0.0.1'
+  ],
+  [
+    'IGPS - -33.92500 18.44848 3D allowed 15/02/27 10:59:21',
+    'USB - 1',
+    'ETH - 1',
+    'SIG 68',
+    'TEMP - 31',
+    'BEAM 104',
+    'SATCUR 6',
+    'UNITIP - 127.0.0.1'
+    'CIMI 901112112552742',
+    'IMEI - 353938-03-007957-2',
+    'FLTS - 0'
+  ],
+  [
+    'ETH - 1',
+    'SIG 68',
+    'SATCUR 6',
+    'USB - 1',
+    'BEAM 104',
+    'IGPS - -33.92500 18.44848 3D allowed 15/02/27 10:59:21',
+    'CIMI 901112112552742',
+    'FLTS - 0',
+    'UNITIP - 127.0.0.1',
+    'IMEI - 353938-03-007957-2',
+    'TEMP - 31'
+  ]
 ]
-
-awkOutput = '{"faults":0,"gps":{"lat":"-33.92500","lon":"18.44848","fix":"3D","status":"allowed","date":"15/02/27","time":"10:59:21"},"ethernet":1,"usb":1,"signal":68,"satellite_id":6,"temp":31,"beam_id":104,"imsi":"901112112552742","imei":"353938-03-007957-2","ip":"127.0.0.1"}'
 
 awk = require('../lib/awk')
 
 describe 'awk', ->
 
-    it 'should parse the string array input lines into a json response', (done) ->
+  describe 'for each fixture (see index.coffee fixtures)', ->
 
-        awk('metrics', "#{awkTest.join('\n')}\n", (err, res) ->
+    it 'should parse the fixture\'s input lines into json response', (done) ->
+      awk 'metrics.awk', "#{fixtures[0].join('\n')}\n", (err, res) ->
+        expect( ->
+          try
+            parsed = JSON.parse(res)
+            expect(parsed).to.contain.keys([
+              'faults',
+              'gps',
+              'lat',
+              'lon',
+              'fix',
+              'status',
+              'date',
+              'ip',
+              'imei',
+              'time',
+              'imsi',
+              'beam_id',
+              'ethernet',
+              'usb',
+              'signal',
+              'satellite_id',
+              'temp'
+            ])
+          catch err
+            throw err
+        ).to.not.throw
+        expect(err).to.not.be.ok
+        done()
 
-            # make sure no process error occurred
-            expect(err).to.not.be.ok
+    it 'should parse the fixture\'s input lines into json response', (done) ->
+      awk 'metrics.awk', "#{fixtures[1].join('\n')}\n", (err, res) ->
+        expect( ->
+          try
+            parsed = JSON.parse(res)
+            expect(parsed).to.contain.keys([
+              'faults',
+              'gps',
+              'lat',
+              'lon',
+              'fix',
+              'status',
+              'date',
+              'ip',
+              'imei',
+              'time',
+              'imsi',
+              'beam_id',
+              'ethernet',
+              'usb',
+              'signal',
+              'satellite_id',
+              'temp'
+            ])
+          catch err
+            throw err
+        ).to.not.throw
+        expect(err).to.not.be.ok
+        done()
 
-            # assert that we got what we expected from awk
-            expect(awkOutput).to.equal(res)
-            
-            # assert that the response is valid json
-            expect(
-                ->
-                    try
-                        JSON.parse(res)
-                    catch err
-                        throw err
-            ).to.not.throw
-            
-            done()
-        )
+    it 'should parse the fixture\'s input lines into json response', (done) ->
+      awk 'metrics.awk', "#{fixtures[2].join('\n')}\n", (err, res) ->
+        expect( ->
+          try
+            parsed = JSON.parse(res)
+            expect(parsed).to.contain.keys([
+              'faults',
+              'gps',
+              'lat',
+              'lon',
+              'fix',
+              'status',
+              'date',
+              'ip',
+              'imei',
+              'time',
+              'imsi',
+              'beam_id',
+              'ethernet',
+              'usb',
+              'signal',
+              'satellite_id',
+              'temp'
+            ])
+          catch err
+            throw err
+        ).to.not.throw
+        expect(err).to.not.be.ok
+        done()

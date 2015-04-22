@@ -1,21 +1,22 @@
+
 {spawn} = require('child_process')
 
-module.exports = (scriptName, scriptInput, callback) ->
+module.exports = (name, lines, callback) ->
 
-  awkOutput = ''
+  stdout = ''
+  stderr = ''
 
   awk = spawn('awk', [
     '-f',
-    "#{__dirname}/../ext/#{scriptName}.awk"
+    "#{__dirname}/../ext/#{name}"
   ]).on('close', (code) ->
     unless code > 0
-      callback(null, awkOutput)
+      callback(null, stdout)
     else
-      callback(code, null)
+      callback({code: code, stderr: stderr}, null)
   )
 
-  awk.stdout.on('data', (data) -> awkOutput += data)
-
-  awk.stderr.on('data', (data) -> console.log(data.toString()))
+  awk.stdout.on('data', (data) -> stdout += data)
+  awk.stderr.on('data', (data) -> stderr += data)
   
-  process.nextTick( -> awk.stdin.end(scriptInput))
+  process.nextTick( -> awk.stdin.end(lines))

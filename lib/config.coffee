@@ -1,16 +1,12 @@
 
-# configured in env?
 {BGAN_HOST, BGAN_PORT, BGAN_PASSWORD} = process.env
 
-# configured in argv?
-BGAN_HOST = process.argv[2] ? BGAN_HOST
-BGAN_PORT = process.argv[3] ? BGAN_PORT
-BGAN_PASSWORD = process.argv[4] ? BGAN_PASSWORD
+BGAN_HOST = '192.168.88.100' unless BGAN_HOST?
+BGAN_PORT = 1829 unless BGAN_PORT?
 
-# no configuration
-BGAN_HOST = BGAN_HOST ? '192.168.88.100'
-BGAN_PORT = BGAN_PORT ? 1829
-BGAN_PASSWORD = BGAN_PASSWORD ? 'admin'
+# is the default password not an empty string?
+# also, there are six different passwords.
+BGAN_PASSWORD = 'admin' unless BGAN_PASSWORD?
 
 module.exports =
   BGAN_HOST: BGAN_HOST

@@ -28,7 +28,7 @@ module.exports = (params, callback) ->
       _.ihip('unitip')
     ]
     onEnd: (responses) ->
-      awk('metrics', "#{responses.join('\n')}\n", (err, res) ->
+      awk('metrics.awk', "#{responses.join('\n')}\n", (err, res) ->
         callback(err, res)
       )
   })
