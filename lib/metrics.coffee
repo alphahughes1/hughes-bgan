@@ -4,9 +4,9 @@
 bgan = require('hughes-bgan-base')
 awk = require('./awk')
 
-_ = new bgan.commander(BGAN_PASSWORD)
-
 module.exports = (params, callback) ->
+
+  _ = new bgan.commander(params.password ? BGAN_PASSWORD)
 
   new bgan.base({
     host: params.host ? BGAN_HOST
