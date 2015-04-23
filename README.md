@@ -14,7 +14,7 @@ the module is programmed to check `BGAN_HOST`, `BGAN_PORT`, `BGAN_PASSWORD` for 
 ```javascript
 // retrieving bgan device metrics:
 var bgan = require('hughes-bgan');
-bgan.metrics(function(err, res) {
+bgan.metrics({host: 'localhost', port: 1234}, function(err, res) {
     if (err) throw err;
     console.log(res);
 });
