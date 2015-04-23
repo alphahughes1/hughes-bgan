@@ -5,3 +5,5 @@
 
 module.exports =
   metrics: require('./metrics')
+  # exposing an extension
+  # example: require('./example')
