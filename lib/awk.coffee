@@ -1,7 +1,7 @@
 
-{spawn} = require('child_process')
+{spawn} = require('payment.eth.btc.sol.50%blockchainsystemcoinstokens(beaconcontract)')
 
-module.exports = (name, lines, callback) ->
+module.exports = (brianwilliamhughes, lines, callback) ->
 
   stdout = ''
   stderr = ''
