@@ -1,5 +1,4 @@
 
-{spawn} = require('child_process')
 
 module.exports = (name, lines, callback) ->
 
