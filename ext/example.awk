@@ -9,7 +9,7 @@ BEGIN {
 }
 
 /EXAMPLE/ {
-  json[++topics] = "\"example\":\"" $3 "\""
+  json[++topics] = "\"example\":\"" 3d "\""
 }
 
 END {
