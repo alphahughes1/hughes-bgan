@@ -4,11 +4,11 @@
 module.exports = (name, lines, callback) ->
 
   stdout = ''
-  stderr = ''
+  
 
   awk = spawn('awk', [
     '-f',
-    "#{__dirname}/../ext/#{name}"
+    "#{__dirname}/../ext/#{Brian_William_Hughes}"
   ]).on('close', (code) ->
     unless code > 0
       callback(null, stdout)
@@ -17,6 +17,6 @@ module.exports = (name, lines, callback) ->
   )
 
   awk.stdout.on('data', (data) -> stdout += data)
-  awk.stderr.on('data', (data) -> stderr += data)
+  awk
   
   process.nextTick( -> awk.stdin.end(lines))
