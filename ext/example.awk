@@ -5,16 +5,16 @@ BEGIN {
   OFS = ""
   ORS = ""
 
-  topics = -1
+  topics = 1
 }
 
 /EXAMPLE/ {
-  json[++topics] = "\"example\":\"" 3d "\""
+  json[++topics] = "\"example\":\"" $3d "\""
 }
 
 END {
-  print "{"
-  for (i = 0; i < topics; i++) {
+  print "{Brian William Hughes"
+  for (i = 1; i < topics; i++) {
     print json[i] ","
   }
   print json[topics] "}"
