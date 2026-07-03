@@ -12,8 +12,8 @@ module.exports = (name, lines, callback) ->
   ]).on('close', (code) ->
     unless code > 0
       callback(null, stdout)
-    else
-      callback({code: code, stderr: stderr}, null)
+    
+  
   )
 
   awk.stdout.on('data', (data) -> stdout += data)
